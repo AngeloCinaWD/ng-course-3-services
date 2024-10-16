@@ -6,6 +6,7 @@
 </div>
 
 <div>
+  <h1>Corsi tramite variabile courses$</h1>
   <div class="courses">
     <!-- la variabile courses$ è ora sottoscritta qui nel template tramite lo special pipe async -->
     <!-- l'async pipe funziona anche con una promise -->
@@ -14,7 +15,7 @@
       <course-image [src]="course.iconUrl"></course-image>
     </course-card>
   </div>
-
+  <h1>Corsi tramite variabile courses$ ed alias courses</h1>
   <!-- possiamo riscrivere il tutto andando ad utilizzare un alias definito in un *ngIf -->
   <div class="courses" *ngIf="courses$ | async as courses">
     <!-- la variabile courses$ è ora sottoscritta qui nel template tramite lo special pipe async -->
@@ -25,4 +26,10 @@
     </course-card>
   </div>
   <!-- quando si lavora recuperando dati da Observables è buona prassi utilizzare l'async pipe perchè questo si occuperà di annullare la sottoscrizione all'observable nel momento in cui un componente viene distrutto -->
+  <h1>Corsi tramite variabile coursesService$ ed alias courses</h1>
+  <div class="courses" *ngIf="coursesService$ | async as courses">
+    <course-card *ngFor="let course of courses" [course]="course">
+      <course-image [src]="course.iconUrl"></course-image>
+    </course-card>
+  </div>
 </div>

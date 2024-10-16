@@ -34,6 +34,8 @@ export class AppComponent implements OnInit {
   // la tipizziamo come un Observable<Course[]> cioè un osservabile che restituisce un array di oggetti Course
   courses$: Observable<Course[]>;
 
+  coursesService$: Observable<Course[]>;
+
   // HTTP NG SERVICE, per fetchare dati da un DB
   // per utilizzare un servive va dichiarato un riferimento ad esso e NG saprà, quando istanzia questa classe, che deve fornire questa dipendenza
   // definisco una proprietà private http di tipo HttpClient
@@ -75,8 +77,10 @@ export class AppComponent implements OnInit {
     this.courses$ = this.http.get<Course[]>("/api/courses", { params: params });
     // la variabile courses$ è quindi un obeservable e la sottoscriveremo nel template tramite il pipe ASYNC
     // quando si lavora recuperando dati da Observables è buona prassi utilizzare l'async pipe perchè questo si occuperà di annullare la sottoscrizione all'observable nel momento in cui un componente viene distrutto, utile per prevenire perdite di memoria
-  }
 
-  // Creare un SERVICE ANGULAR CUSTOM
-  // runnare il comando ng generate service services/courses, in questo modo creo un service con classe CoursesService nella cartella /src/app/services
+    // Creare un SERVICE ANGULAR CUSTOM
+    // runnare il comando ng generate service services/courses, in questo modo creo un service con classe CoursesService nella cartella /src/app/services
+    // assegno il valore alla variabile coursesService$ richiamando il metodo loadCourses() del service CoursesService
+    this.coursesService$ = this.coursesService.loadCourses();
+  }
 }
