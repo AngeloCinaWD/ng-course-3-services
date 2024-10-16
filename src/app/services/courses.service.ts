@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Course } from "../model/course";
@@ -19,6 +19,23 @@ export class CoursesService {
 
     return this.http.get<Course[]>("/api/courses", {
       params: params,
+    });
+  }
+
+  // definiamo una API che ci permetta di modificare un corso
+  // il metodo riceve come argomento un corso
+  saveCourse(course: Course): Observable<Course> {
+    // per modificare il corso effettuiamo una chiamata put
+    // il metodo put dell'httpclient di angular prevede che vengano passati 2 parametri: url con id dell'oggetto da modificare ed il body della chiamata put
+    // il metodo restituisce un Observable, quindi per farlo funzionare dobbiamo sottoscriverci
+
+    // passo un'istanza di intestazione Http, header, ad esempio passo un valore che posso utilizzare per autenticare la richiesta
+    // la X- viene anteposta a quelle proprietà dell'header che non sono quelle di default
+
+    const headers = new HttpHeaders().set("X-Auth", "userId");
+
+    return this.http.put<Course>(`/api/courses/${course.id}`, course, {
+      headers: headers,
     });
   }
 }

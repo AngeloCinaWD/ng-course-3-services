@@ -11,7 +11,12 @@
     <!-- la variabile courses$ è ora sottoscritta qui nel template tramite lo special pipe async -->
     <!-- l'async pipe funziona anche con una promise -->
     <!-- <course-card *ngFor="let course of courses" [course]="course"> -->
-    <course-card *ngFor="let course of courses$ | async" [course]="course">
+    <!-- mi metto in ascolto dell'evento custom courseChanged -->
+    <course-card
+      *ngFor="let course of courses$ | async"
+      [course]="course"
+      (courseChanged)="onCourseChanged($event)"
+    >
       <course-image [src]="course.iconUrl"></course-image>
     </course-card>
   </div>

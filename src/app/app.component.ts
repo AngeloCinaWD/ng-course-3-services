@@ -83,4 +83,12 @@ export class AppComponent implements OnInit {
     // assegno il valore alla variabile coursesService$ richiamando il metodo loadCourses() del service CoursesService
     this.coursesService$ = this.coursesService.loadCourses();
   }
+
+  onCourseChanged(course: Course) {
+    // il metodo put dell'httpclient restituisce un observable quindi bisogna utilizzare il metodo subscribe() per farlo funzionare
+    // il put restituisce un observable con un oggetto Course, quello modificato
+    this.coursesService
+      .saveCourse(course)
+      .subscribe((value) => console.log(value.description));
+  }
 }
