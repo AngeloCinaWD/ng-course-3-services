@@ -13,6 +13,7 @@ import { CourseCardComponent } from "./course-card/course-card.component";
 import { HighlightedDirective } from "./directives/highlighted.directive";
 import { Observable } from "rxjs";
 import { HttpClient, HttpParams } from "@angular/common/http";
+import { CoursesService } from "./services/courses.service";
 
 @Component({
   selector: "app-root",
@@ -36,7 +37,11 @@ export class AppComponent implements OnInit {
   // HTTP NG SERVICE, per fetchare dati da un DB
   // per utilizzare un servive va dichiarato un riferimento ad esso e NG saprà, quando istanzia questa classe, che deve fornire questa dipendenza
   // definisco una proprietà private http di tipo HttpClient
-  constructor(private http: HttpClient) {}
+  // CUSTOM SERVICE, inietto nel componente il service creato da me
+  constructor(
+    private http: HttpClient,
+    private coursesService: CoursesService
+  ) {}
 
   // questo Lyfecycle Hook viene chiamato dopo il costruttore, quindi la variabile http sarà disponibile
   ngOnInit() {
@@ -71,4 +76,7 @@ export class AppComponent implements OnInit {
     // la variabile courses$ è quindi un obeservable e la sottoscriveremo nel template tramite il pipe ASYNC
     // quando si lavora recuperando dati da Observables è buona prassi utilizzare l'async pipe perchè questo si occuperà di annullare la sottoscrizione all'observable nel momento in cui un componente viene distrutto, utile per prevenire perdite di memoria
   }
+
+  // Creare un SERVICE ANGULAR CUSTOM
+  // runnare il comando ng generate service services/courses, in questo modo creo un service con classe CoursesService nella cartella /src/app/services
 }
