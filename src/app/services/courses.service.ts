@@ -5,6 +5,9 @@ import { Course } from "../model/course";
 
 // un service è caratterizzato dal decorator @Injectable, questo permette al nostro service di essere iniettato nel nostro componente tramite Dependency Injection nel costruttore della classe
 // la proprietà providedIn con valore root indica che verrà creata una sola istanza della classe per l'intero progetto e può essere iniettata ed utilizzata ovunque, pattern di programmazione ad oggetti Singleton: una classe viene istanziata una sola volta e può essere utilizzata globalmente
+// se rimuovessi questa proprietà otterrei un errore: No provider fro CoursesService, cioè ng non è in grado, in caso il service sia iniettato da qualche parte, di creare la dipendenza al service
+// il provider (il fornitore) è ciò che crea la dipendenza, il provider fornisce al sistema una factory function che viene chiamata da ng per generare le dipendenze
+// la proprietà providedIn genera il provider che verrà utilizzato da ng, detto tree-shakeable provider
 // questa cosa la posso confermare andando ad iniettare il service in più componenti e mettendo qui nel costruttore un console.log, in console troverò solo un console.log anche se ho iniettato il service in più componenti, proprio perchè il service viene istanziato una sola volta ed in tutti i componenti viene iniettata la stessa classe
 @Injectable({
   providedIn: "root",
