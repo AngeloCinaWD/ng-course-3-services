@@ -16,6 +16,7 @@ import { HighlightedDirective } from "./directives/highlighted.directive";
 import { Observable } from "rxjs";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { CoursesService } from "./services/courses.service";
+import { APP_CONFIG, AppConfig, CONFIG_TOKEN } from "./configurazioniApp";
 
 // COSTRUZIONE DI UN PROVIDER, funzione che viene chiamata dal sistema di dependency injection di ng per iniettare le dipendenze
 // questa funzione restituisce un'istanza della classe CoursesService, ne richiama il costruttore tramite keyword new e gli passa tutto ciò di cui ha bisogno. Nel caso di un'istanza CoursesService si ha bisogno del service HttpClient di ng
@@ -62,6 +63,27 @@ export const COURSES_SERVICE = new InjectionToken<CoursesService>(
   // registrare lo stesso provider in più componenti può essere utile quando questo contiene dati diversi memorizzati per ogni istanza di service (esempio del counter++ nel costruttore e dell'id di ogni singola istanza che prende il valore del counter, ogni istanza avrà un id)
   // nel caso di un service che prende dati da un BE e li passa va bene il pattern Singleton
   // le istanze create da un provider locale, di un solo componente, rispettano il LyfeCycle del componente, vengono create col componente e distrutte con esso
+  // la proprietà providers la utilizzo se per esempio creo un qualcosa che non sia un service che voglio iniettare tramite dependency injection nel mio codice, ad esempio un oggetto con delle configurazioni utili nella mia app
+  // creo un file configurazioniApp.ts in app
+  // creo il provider per poter iniettare l'oggetto di configurazione nel costruttore del componente
+  // nell'oggetto di configurazione del provider in provide indico il token che ho generato e utilizzo useValue per indicare cosa deve restituire, restituisco l'oggetto di tipo AppConfig di nome APP_CONFIG
+  // nel costruttore devo utilizzare il decoratore @Inject() e specificare il nome del token
+  // providers: [
+  //   {
+  //     provide: CONFIG_TOKEN,
+  //     useValue: APP_CONFIG,
+  //   },
+  // ],
+  // potrei anche utilizzare la proprietà useFactory e definire una funzione che ritorna l'oggetto di configurazione
+  // quando si definisce un provider in questo modo, sia che venga iniettato nel costruttore sia che non venga iniettato, l'oggetto ed il token verranno caricati lo stesso e saranno nel bundle della memoria
+  // per evitarlo utilizzare le proprietà providedIn e useFactory in un oggetto di configurazione come secondo parametro quando si crea il token di iniezione, in modo da utilizzare il Singleton Pattern ed il modello di Tree-Shakeable provider
+  // in questo modo non serve più definire il provider qui
+  // providers: [
+  //   {
+  //     provide: CONFIG_TOKEN,
+  //     useFactory: () => APP_CONFIG,
+  //   },
+  // ],
 })
 export class AppComponent implements OnInit {
   // SERVICES, i services ci consentono di creare metodi riutilizzabili nel progetto, ad esempio interrogare un DB ed ottenere dati da utilizzare
@@ -83,10 +105,14 @@ export class AppComponent implements OnInit {
   // per utilizzare un servive va dichiarato un riferimento ad esso e NG saprà, quando istanzia questa classe, che deve fornire questa dipendenza
   // definisco una proprietà private http di tipo HttpClient
   // CUSTOM SERVICE, inietto nel componente il service creato da me
+  // inietto l'oggetto di tipo AppConfig che ho creato e per il quale ho definito il provider per l'iniezione
   constructor(
     private http: HttpClient,
-    private coursesService: CoursesService
-  ) {}
+    private coursesService: CoursesService,
+    @Inject(CONFIG_TOKEN) private configObject: AppConfig
+  ) {
+    console.log(configObject);
+  }
 
   // inietto il service CoursesService utilizzando il provider creato da me
   // devo utilizzare il decoratore @Inject(nome_token) per indicare a quale provider ng si deve rifare per creare la dipendenza
