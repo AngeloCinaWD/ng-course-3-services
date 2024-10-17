@@ -34,7 +34,8 @@ export class CourseCardComponent implements OnInit {
   courseEmitter = new EventEmitter<Course>();
 
   // creazione dipendenza del service CourseServive tramite @Inject del token injection creato in app.component
-  constructor(@Inject(COURSES_SERVICE) private cs: CoursesService) {}
+  // constructor(@Inject(COURSES_SERVICE) private cs: CoursesService) {}
+  constructor() {}
 
   ngOnInit() {}
 

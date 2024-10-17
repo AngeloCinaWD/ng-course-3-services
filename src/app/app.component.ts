@@ -39,13 +39,24 @@ export const COURSES_SERVICE = new InjectionToken<CoursesService>(
   // si indica cosa viene fornito tramite un oggetto di configurazione per ogni provider, proprietà provide: token(non è uuna stringa), e useFactory: nome funzione di factory
   // proprietà deps, dependencies, indichiamo tutte le dipendenze necessarie alla creazione dell'istanza del service, in questo caso l'HttpClient
   // stiamo informando ng di come creare la dependency per questo service
-  providers: [
-    {
-      provide: COURSES_SERVICE,
-      useFactory: coursesServiceProvider,
-      deps: [HttpClient],
-    },
-  ],
+  // providers: [
+  //   {
+  //     provide: COURSES_SERVICE,
+  //     useFactory: coursesServiceProvider,
+  //     deps: [HttpClient],
+  //   },
+  // ],
+  // esiste una forma più semplice per creare il provider di un service, utilizzando il nome della classe (perchè è univoco) e utilizzando la classe come factory, ng chimerà il costruttore della classe e gli passerà tutte le dipendenze necessarie, la proprietà non è useFactory ma useClass
+  // providers: [
+  //   {
+  //     provide: CoursesService,
+  //     useClass: CoursesService,
+  //   },
+  // ],
+  // ancora più semplificato è passando nei providers direttamente il nome della classe, ng sa che dovrà utilizzare il nome della classe come identificatore univoco del provider e per la factory va a chiamare il costruttore della classe
+  // providers: [CoursesService],
+  // in questo modo non dobbiamo utilizzare più il decoratore @Inject() perchè questo ha bisogno che venga indicato il token di iniezione
+  // in questo modo utilizzo il provider solo all'interno del componente, per utilizzarlo in tutta l'app o lo registro nei providers di app.module.ts oppure utilizzo la proprietà providedIn: "root" nel decoratore @Injectable() direttamente nel service
 })
 export class AppComponent implements OnInit {
   // SERVICES, i services ci consentono di creare metodi riutilizzabili nel progetto, ad esempio interrogare un DB ed ottenere dati da utilizzare
@@ -67,17 +78,17 @@ export class AppComponent implements OnInit {
   // per utilizzare un servive va dichiarato un riferimento ad esso e NG saprà, quando istanzia questa classe, che deve fornire questa dipendenza
   // definisco una proprietà private http di tipo HttpClient
   // CUSTOM SERVICE, inietto nel componente il service creato da me
-  // constructor(
-  //   private http: HttpClient,
-  //   private coursesService: CoursesService
-  // ) {}
+  constructor(
+    private http: HttpClient,
+    private coursesService: CoursesService
+  ) {}
 
   // inietto il service CoursesService utilizzando il provider creato da me
   // devo utilizzare il decoratore @Inject(nome_token) per indicare a quale provider ng si deve rifare per creare la dipendenza
-  constructor(
-    @Inject(COURSES_SERVICE) private coursesService: CoursesService,
-    private http: HttpClient
-  ) {}
+  // constructor(
+  //   @Inject(COURSES_SERVICE) private coursesService: CoursesService,
+  //   private http: HttpClient
+  // ) {}
 
   // questo Lyfecycle Hook viene chiamato dopo il costruttore, quindi la variabile http sarà disponibile
   ngOnInit() {
