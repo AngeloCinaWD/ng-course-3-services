@@ -5,7 +5,9 @@ import {
   Inject,
   InjectionToken,
   OnInit,
+  Optional,
   QueryList,
+  Self,
   ViewChild,
   ViewChildren,
 } from "@angular/core";
@@ -106,9 +108,12 @@ export class AppComponent implements OnInit {
   // definisco una proprietà private http di tipo HttpClient
   // CUSTOM SERVICE, inietto nel componente il service creato da me
   // inietto l'oggetto di tipo AppConfig che ho creato e per il quale ho definito il provider per l'iniezione
+  // esistono diversi decoratori opzionali per gestire la dependency injection: @Optional() messo prima dell'injection non blocca il codice se il service non è presente o non è istanziabile perchè non ha un provider, @Self() blocca la ricerca di un provider secondo Hierarchical Dependency Injection cioè se definisco il provider in un componente (e quindi non è un provider TREE-SHAKEABLE) se non c'è nel componente stesso NG non lo va a cercare nel compoennete padre e così via, @SkipSelf() fa il contrario cioè va a cercare l'istanza del provider direttamente nel parent ignorando il componente stesso
   constructor(
     private http: HttpClient,
-    private coursesService: CoursesService,
+    @Optional() private coursesService: CoursesService,
+    // @Self() private coursesService: CoursesService,
+    // @SkipSelf() private coursesService: CoursesService,
     @Inject(CONFIG_TOKEN) private configObject: AppConfig
   ) {
     console.log(configObject);
