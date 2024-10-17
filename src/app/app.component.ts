@@ -57,6 +57,11 @@ export const COURSES_SERVICE = new InjectionToken<CoursesService>(
   // providers: [CoursesService],
   // in questo modo non dobbiamo utilizzare più il decoratore @Inject() perchè questo ha bisogno che venga indicato il token di iniezione
   // in questo modo utilizzo il provider solo all'interno del componente, per utilizzarlo in tutta l'app o lo registro nei providers di app.module.ts oppure utilizzo la proprietà providedIn: "root" nel decoratore @Injectable() direttamente nel service
+  // ogni volta che registro un provider in un component questo andrà a creare una nuova istanza del service, il service deve essere istanziato una sola volta e tramite dependency injection gli altri componenti possono utilizzarlo
+  // Hierarchical Dependency Injection, ogni componente quando deve utilizzare un service controlla nella propria lista di provider se è presente un provider per quel service, se non c'è sale al componente padre e cerca nella sua lista di provider, se non c'è sale ancora, fino ad arrivare alla root
+  // registrare lo stesso provider in più componenti può essere utile quando questo contiene dati diversi memorizzati per ogni istanza di service (esempio del counter++ nel costruttore e dell'id di ogni singola istanza che prende il valore del counter, ogni istanza avrà un id)
+  // nel caso di un service che prende dati da un BE e li passa va bene il pattern Singleton
+  // le istanze create da un provider locale, di un solo componente, rispettano il LyfeCycle del componente, vengono create col componente e distrutte con esso
 })
 export class AppComponent implements OnInit {
   // SERVICES, i services ci consentono di creare metodi riutilizzabili nel progetto, ad esempio interrogare un DB ed ottenere dati da utilizzare
