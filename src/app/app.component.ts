@@ -2,6 +2,8 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  Inject,
+  InjectionToken,
   OnInit,
   QueryList,
   ViewChild,
@@ -15,10 +17,35 @@ import { Observable } from "rxjs";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { CoursesService } from "./services/courses.service";
 
+// COSTRUZIONE DI UN PROVIDER, funzione che viene chiamata dal sistema di dependency injection di ng per iniettare le dipendenze
+// questa funzione restituisce un'istanza della classe CoursesService, ne richiama il costruttore tramite keyword new e gli passa tutto ciò di cui ha bisogno. Nel caso di un'istanza CoursesService si ha bisogno del service HttpClient di ng
+function coursesServiceProvider(http: HttpClient): CoursesService {
+  return new CoursesService(http);
+}
+// per utilizzare il provider creato devo registrarlo nella classe, nella proprietà del decoratore providers, passandolo in un oggetto di configurazione ed indicandolo con un nome univoco, detto Token univoco di iniezione, InjectionToken
+// creo l'injection token, l'identificatore univoco della dipendenza, ogni dipendenza ha il suo token
+// il tipo del token sarà il service per il quale lo creo, un CoursesService
+// va passato un parametro stringa che indichi il nome univoco
+// in caso volessi iniettare il service in un altro componente indico il token come esportabile, ad esempio nel course-card.component
+export const COURSES_SERVICE = new InjectionToken<CoursesService>(
+  "COURSES_SERVICE"
+);
+
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
+  // una volta creato il token, va configurato il provider
+  // si indica cosa viene fornito tramite un oggetto di configurazione per ogni provider, proprietà provide: token(non è uuna stringa), e useFactory: nome funzione di factory
+  // proprietà deps, dependencies, indichiamo tutte le dipendenze necessarie alla creazione dell'istanza del service, in questo caso l'HttpClient
+  // stiamo informando ng di come creare la dependency per questo service
+  providers: [
+    {
+      provide: COURSES_SERVICE,
+      useFactory: coursesServiceProvider,
+      deps: [HttpClient],
+    },
+  ],
 })
 export class AppComponent implements OnInit {
   // SERVICES, i services ci consentono di creare metodi riutilizzabili nel progetto, ad esempio interrogare un DB ed ottenere dati da utilizzare
@@ -40,9 +67,16 @@ export class AppComponent implements OnInit {
   // per utilizzare un servive va dichiarato un riferimento ad esso e NG saprà, quando istanzia questa classe, che deve fornire questa dipendenza
   // definisco una proprietà private http di tipo HttpClient
   // CUSTOM SERVICE, inietto nel componente il service creato da me
+  // constructor(
+  //   private http: HttpClient,
+  //   private coursesService: CoursesService
+  // ) {}
+
+  // inietto il service CoursesService utilizzando il provider creato da me
+  // devo utilizzare il decoratore @Inject(nome_token) per indicare a quale provider ng si deve rifare per creare la dipendenza
   constructor(
-    private http: HttpClient,
-    private coursesService: CoursesService
+    @Inject(COURSES_SERVICE) private coursesService: CoursesService,
+    private http: HttpClient
   ) {}
 
   // questo Lyfecycle Hook viene chiamato dopo il costruttore, quindi la variabile http sarà disponibile

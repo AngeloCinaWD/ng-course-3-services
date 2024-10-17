@@ -5,6 +5,7 @@ import {
   ContentChildren,
   ElementRef,
   EventEmitter,
+  Inject,
   Input,
   OnInit,
   Output,
@@ -13,6 +14,8 @@ import {
 } from "@angular/core";
 import { Course } from "../model/course";
 import { CourseImageComponent } from "../course-image/course-image.component";
+import { COURSES_SERVICE } from "../app.component";
+import { CoursesService } from "../services/courses.service";
 
 @Component({
   selector: "course-card",
@@ -30,7 +33,8 @@ export class CourseCardComponent implements OnInit {
   @Output("courseChanged")
   courseEmitter = new EventEmitter<Course>();
 
-  constructor() {}
+  // creazione dipendenza del service CourseServive tramite @Inject del token injection creato in app.component
+  constructor(@Inject(COURSES_SERVICE) private cs: CoursesService) {}
 
   ngOnInit() {}
 
