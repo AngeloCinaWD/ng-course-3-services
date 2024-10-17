@@ -11,6 +11,7 @@ import { Course } from "../model/course";
 // COSTRUZIONE DI UN PROVIDER
 // questa cosa la posso confermare andando ad iniettare il service in più componenti e mettendo qui nel costruttore un console.log, in console troverò solo un console.log anche se ho iniettato il service in più componenti, proprio perchè il service viene istanziato una sola volta ed in tutti i componenti viene iniettata la stessa classe
 // utilizzare la proprietà providedIn: "root" è la stessa cosa se registro il provider nei providers di app-module.ts, cioè il provider può essere utilizzato in tutta l'app
+// utilizzare questa proprietà permette di non istanziare mai nell'app il service se non è mai stato utilizzato e permette di non occupare il bundle della memoria (lazy load, caricamento pigro, una cosa viene istanziata solo se utilizzata)
 @Injectable({
   providedIn: "root",
 })
